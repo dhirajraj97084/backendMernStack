@@ -2,6 +2,7 @@ import express from "express";
 import { User } from "../models/user_modes.js";
 import bcrypt from "bcryptjs"
 import jwt from "jsonwebtoken";
+import fetchUsert from "../middleware/fetchUser.js";
 
 const authRouter = express.Router();
 
@@ -67,6 +68,18 @@ authRouter.post('/login', async (req, res) => {
     } catch (error) {
         console.log('Inetrnal Server Error');
         res.send("Internal server error");
+    }
+})
+
+//getUser API
+authRouter.get('/getuser',fetchUsert,async(req,res)=>{
+    try {
+       const userId=req.userId;
+       const user=await User.findById(userId).select("-password");
+       res.send(user) ;
+    } catch (error) {
+       console.log(error.message) ;
+       res.send("Iternal server error");
     }
 })
 
